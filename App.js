@@ -16,13 +16,15 @@ const App = () => {
       <View style={styles.inputView}>
         <TextInput
           style={styles.inputText}
-          placeholder="what do you want to do?"
+          placeholder="what do you want to do? type here..."
           placeholderTextColor={"#fff8dc"}
         />
         <TouchableOpacity style={styles.button} onPress={onPressFunction}>
           <Text style={styles.buttonText}>+</Text>
         </TouchableOpacity>
-
+      </View>
+      <View style={styles.listView}>
+        <Text style={styles.listHeading}>~To Do Items~</Text>
       </View>
     </SafeAreaView>
   );
@@ -66,6 +68,7 @@ const styles = StyleSheet.create(
       height: 40,
       width: 300,
       marginLeft: 3,
+      color: "#fff8dc",
 
     },
 
@@ -83,7 +86,22 @@ const styles = StyleSheet.create(
       fontSize: 30,
       fontWeight: "bold",
       color: "#0000ff"
-    }
+    },
+
+    listView: {
+      flex: 1,
+      backgroundColor: "#0000ff",
+      margin: 3,
+      borderRadius: 15,
+      alignItems: "center"
+    },
+
+    listHeading: {
+      color: "#fff8dc",
+      fontSize: 22,
+      fontStyle: "italic",
+      textDecorationLine: 'underline'
+    },
 
   }
 )
