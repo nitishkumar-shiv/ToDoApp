@@ -1,16 +1,42 @@
-import React from "react";
-import { SafeAreaView, Text, StyleSheet, View, TextInput, TouchableOpacity } from "react-native";
+import React, { useState } from "react";
+import {
+  SafeAreaView,
+  Text,
+  StyleSheet,
+  View, TextInput,
+  TouchableOpacity,
+  FlatList, Image
+} from "react-native";
 
 const App = () => {
+  const [todolist, setTodoList] = useState([]);
+  const [text, settext] = useState('');
+  const [idd, setid] = useState(0);
 
-  const onPressFunction = () => {
-
+  const changeHandler = (val) => {
+    settext(val);
   }
 
+  const onPressButton = () => {
+    setTodoList([...todolist, { name: text, id: idd }]);
+    setid(idd + 1);
+    settext('');
+    console.log(text);
+  }
+
+  const deleteItem = (id) => {
+    setTodoList((todolist) => {
+      return todolist.filter(item => item.id != id);
+    });
+  }
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={styles.container} >
       <View style={styles.headingView}>
+        <Image
+          style={styles.images}
+          source={require('./assets/rently-icon.png')}
+        />
         <Text style={styles.headingText}>TO~DO~APP</Text>
       </View>
       <View style={styles.inputView}>
@@ -18,15 +44,42 @@ const App = () => {
           style={styles.inputText}
           placeholder="what do you want to do? type here..."
           placeholderTextColor={"#fff8dc"}
+          value={text}
+          onChangeText={changeHandler}
         />
-        <TouchableOpacity style={styles.button} onPress={onPressFunction}>
+        <TouchableOpacity style={styles.button} onPress={onPressButton}>
           <Text style={styles.buttonText}>+</Text>
         </TouchableOpacity>
       </View>
       <View style={styles.listView}>
         <Text style={styles.listHeading}>~To Do Items~</Text>
+        <FlatList
+          data={todolist}
+          keyExtractor={item => item.id}
+          renderItem={({ item }) => (
+            <View style={styles.flatlistcontainer}>
+              <View>
+                <TouchableOpacity>
+                  <Image
+                    style={styles.images}
+                    source={require('./assets/tic-icon.jpg')}
+                  />
+                </TouchableOpacity>
+              </View>
+              <View style={styles.flatlistView}>
+                <Text style={styles.flatlistText}>{item.name}</Text>
+              </View>
+              <TouchableOpacity onPress={() => deleteItem(item.id)}>
+                <Image
+                  style={styles.images}
+                  source={require('./assets/sign-delete-icon.png')}
+                />
+              </TouchableOpacity>
+            </View>
+          )}
+        />
       </View>
-    </SafeAreaView>
+    </SafeAreaView >
   );
 };
 
@@ -38,6 +91,7 @@ const styles = StyleSheet.create(
 
     headingView: {
       flex: 1 / 15,
+      flexDirection: "row",
       backgroundColor: "#0000ff",
       marginLeft: 3,
       marginRight: 3,
@@ -103,8 +157,33 @@ const styles = StyleSheet.create(
       textDecorationLine: 'underline'
     },
 
+    flatlistView: {
+      backgroundColor: "#fffaf0",
+      height: 50,
+      width: 300,
+      margin: 5,
+      justifyContent: "center"
+
+
+    },
+    flatlistText: {
+      fontSize: 25,
+      color: "#ff1493",
+
+    },
+    images: {
+      height: 35,
+      width: 35,
+
+    },
+    flatlistcontainer: {
+      flexDirection: "row",
+      backgroundColor: "#fffaf0",
+      borderRadius: 20,
+      marginBottom: 5,
+      alignItems: "center"
+    }
+
   }
 )
-
 export default App;
-
