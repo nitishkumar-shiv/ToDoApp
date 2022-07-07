@@ -12,22 +12,52 @@ const App = () => {
   const [todolist, setTodoList] = useState([]);
   const [text, settext] = useState('');
   const [idd, setid] = useState(0);
+  const [istoggle, settoggle] = useState(true);
+  const [editid, seteditid] = useState(null);
 
   const changeHandler = (val) => {
     settext(val);
   }
 
-  const onPressButton = () => {
-    setTodoList([...todolist, { name: text, id: idd }]);
-    setid(idd + 1);
-    settext('');
-    console.log(text);
+  const onPressAdd = () => {
+
+    if (!istoggle) {
+      const newtodo = todolist.map((item) => {
+        if (item.id == editid) {
+          return { ...item, name: text };
+        }
+        return item;
+      }
+
+      );
+      settoggle(true);
+      settext('');
+      seteditid(null);
+
+      setTodoList(newtodo)
+    }
+    else {
+      setTodoList([...todolist, { name: text, id: idd }]);
+      setid(idd + 1);
+      settext('');
+      console.log(text);
+    }
   }
 
   const deleteItem = (id) => {
     setTodoList((todolist) => {
       return todolist.filter(item => item.id != id);
     });
+  }
+
+  const editItem = (id) => {
+    let newEditItem = todolist.find((item) => {
+      return item.id === id
+    });
+    console.log(newEditItem);
+    settoggle(false);
+    settext(newEditItem.name);
+    seteditid(id);
   }
 
   return (
@@ -47,9 +77,18 @@ const App = () => {
           value={text}
           onChangeText={changeHandler}
         />
-        <TouchableOpacity style={styles.button} onPress={onPressButton}>
-          <Text style={styles.buttonText}>+</Text>
-        </TouchableOpacity>
+
+        {istoggle ?
+          <TouchableOpacity style={styles.button} onPress={onPressAdd}>
+            <Text style={styles.buttonText}>+</Text>
+          </TouchableOpacity> :
+          <TouchableOpacity style={styles.button} onPress={onPressAdd}>
+            <Image
+              style={styles.images}
+              source={require('./assets/edit-icon.png')}
+            />
+          </TouchableOpacity>
+        }
       </View>
       <View style={styles.listView}>
         <Text style={styles.listHeading}>~To Do Items~</Text>
@@ -67,8 +106,14 @@ const App = () => {
                 </TouchableOpacity>
               </View>
               <View style={styles.flatlistView}>
-                <Text style={styles.flatlistText}>{item.name}</Text>
+                <Text editable={true} style={styles.flatlistText}>{item.name}</Text>
               </View>
+              <TouchableOpacity onPress={() => editItem(item.id)}>
+                <Image
+                  style={styles.images}
+                  source={require('./assets/edit-icon.png')}
+                />
+              </TouchableOpacity>
               <TouchableOpacity onPress={() => deleteItem(item.id)}>
                 <Image
                   style={styles.images}
@@ -160,7 +205,7 @@ const styles = StyleSheet.create(
     flatlistView: {
       backgroundColor: "#fffaf0",
       height: 50,
-      width: 300,
+      width: 260,
       margin: 5,
       justifyContent: "center"
 
