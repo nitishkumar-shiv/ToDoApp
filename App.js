@@ -37,7 +37,7 @@ const App = () => {
       setTodoList(newtodo)
     }
     else {
-      setTodoList([...todolist, { name: text, id: idd }]);
+      setTodoList([...todolist, { name: text, id: idd, iscompleted: false }]);
       setid(idd + 1);
       settext('');
       console.log(text);
@@ -58,6 +58,18 @@ const App = () => {
     settoggle(false);
     settext(newEditItem.name);
     seteditid(id);
+  }
+
+  const completetodo = (id) => {
+    const newArray = todolist.map((item) => {
+      if (item.id == id) {
+        return { ...item, iscompleted: true };
+      }
+      else {
+        return item;
+      }
+    })
+    setTodoList(newArray);
   }
 
   return (
@@ -98,7 +110,7 @@ const App = () => {
           renderItem={({ item }) => (
             <View style={styles.flatlistcontainer}>
               <View>
-                <TouchableOpacity>
+                <TouchableOpacity onPress={() => completetodo(item.id)}>
                   <Image
                     style={styles.images}
                     source={require('./assets/tic-icon.jpg')}
@@ -106,7 +118,10 @@ const App = () => {
                 </TouchableOpacity>
               </View>
               <View style={styles.flatlistView}>
-                <Text editable={true} style={styles.flatlistText}>{item.name}</Text>
+                <Text style={{
+                  textDecorationLine: item.iscompleted ? 'line-through' : 'none',
+                  textDecorationStyle: 'solid'
+                }}>{item.name}</Text>
               </View>
               <TouchableOpacity onPress={() => editItem(item.id)}>
                 <Image
@@ -211,11 +226,13 @@ const styles = StyleSheet.create(
 
 
     },
-    flatlistText: {
-      fontSize: 25,
-      color: "#ff1493",
+    // flatlistText: {
+    //   fontSize: 25,
+    //   color: "#ff1493",
+    //   textDecorationLine: item.iscompleted ? 'line-through' : 'none',
+    //   textDecorationStyle: 'solid'
 
-    },
+    // },
     images: {
       height: 35,
       width: 35,
